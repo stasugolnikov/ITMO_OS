@@ -4,12 +4,12 @@ function calc {
 			echo $[$2 + $3]
 			;;
 		'sub')
-		       	echo $[$2 + $3]
+		       	echo $[$2 - $3]
 			;;
 		'mul')
-		       	echo $[$2 + $3]
+		       	echo $[$2 * $3]
 			;;
 		'div')
-		       	echo $[$2 + $3]
+		       	echo $[$2 / $3]
 	esac
 }
