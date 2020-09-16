@@ -1,3 +1,4 @@
 #! /bin/bash
-tac $1 | rev >$2
-
+function reverse {
+	tac $1 | rev >$2
+}
