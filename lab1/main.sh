@@ -6,6 +6,7 @@
 . ./task_5.sh
 . ./task_6.sh
 . ./task_7.sh
+. ./task_8.sh
 case $1 in 
 	'calc')
 		calc $2 $3 $4
