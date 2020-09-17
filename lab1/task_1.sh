@@ -1,21 +1,20 @@
 #! /bin/bash
 . ./task_7.sh
 
+boldface='\033[1m'
+red='\033[31m'
+norm='\033[0m'
+
 function check_args {
 	if [[ $# < 3 ]]
 	then
-		echo "requires 3 arguments, but $# was provided">&2
+		echo -en "${red} ${boldface}requires 3 arguments, but $# was provided${norm}\n">&2
 		exit -1
 	fi
-	if [[ $2 =~ ^-?[[:digit:]]+$ && $3 =~ ^-?[[:digit:]]+$ ]]
+	if ! [[ $2 =~ ^-?[[:digit:]]+$ && $3 =~ ^-?[[:digit:]]+$ ]]
 	then
-		echo "arguments must be integers">&2
+		echo -en "${boldface} ${red}arguments must be integers${norm}\n">&2
 		exit -2
-	fi
-	if [[ $1 -eq 'div' && $3 -eq 0 ]]
-	then
-		echo "division by zero">&2
-		exit -3
 	fi
 }
 
@@ -29,10 +28,15 @@ function mul {
 	echo $[$1 * $2]
 }
 function div {
+	if [[ $2 -eq 0 ]]
+	then
+		echo -en "${red} ${boldface}division by zero${norm}\n" >&2
+		exit -3
+	fi
 	echo $[$1 / $2]
 }
 
-function switch_case {
+function select_case {
 	case $1 in
 		'sum')
 			sum $2 $3
@@ -47,7 +51,12 @@ function switch_case {
 			div $2 $3
 			;;
 		*)
-			echo 'command does not exists'>&2
+			echo -en "${red} ${boldface}command does not exists${norm}\n">&2
 			Help
 	esac
+}
+
+function calc {
+	check_args $1 $2 $3
+	select_case $1 $2 $3
 }
