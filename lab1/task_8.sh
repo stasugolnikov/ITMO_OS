@@ -56,6 +56,7 @@ function interactive {
 				;;
 			6)
 				read code
+				tput clear
 				exit $code
 				;;
 			7)

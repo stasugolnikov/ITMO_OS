@@ -35,6 +35,7 @@ case $1 in
 		;;
 		
 	*) 
-		echo 'wrong command'
+		echo -en "\033[31mCommand does not exists \033[m\n" >&2
+		Help		
 
 esac

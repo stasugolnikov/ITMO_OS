@@ -5,7 +5,7 @@ NORMAL='\033[0m'
 YELLOW='\033[33m'
 
 function Help {
-	echo -en "\t\t\t${RED}HELP ${NORMAL}\n"
+	echo -en "\t\t\t \033[44m HELP ${NORMAL}\n"
 	echo -en "${YELLOW} calc: ${NORMAL}\n"
 	echo -e "\t args: sum/sub/div/mul, first number, second number"
 	echo -e "\t out:  result of operation on two numbers"

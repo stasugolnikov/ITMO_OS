@@ -6,6 +6,7 @@ function log {
 
 	grep "\[    [0-9]\{2\}.[0-9]\{3\}\] \((II)\|(WW)\)" /var/log/anaconda/X.log |
 
-	sed "s/II/${BLUE}Information:${WHITE}/" |
-	sed "s/WW/${YELLOW}Warning:${WHITE}/"
+	sed "s/(II)/${BLUE}Information:${WHITE}/" |
+	sed "s/(WW)/${YELLOW}Warning:${WHITE}/" |
+	sort -k 3
 }
