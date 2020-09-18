@@ -7,22 +7,22 @@ norm='\033[0m'
 function print_error {
 	case $1 in
 		-1)
-			echo -en "${red}${bold}Invalid number of arguments${norm}\n"
+			echo -en "${red}${bold}Invalid number of arguments${norm}\n">&2
 			;;
 		-2)
-			echo -en "${red}${bold}Invalid type of arguments${norm}\n"
+			echo -en "${red}${bold}Invalid type of arguments${norm}\n">&2
 			;;
 		-3)
-			echo -en "${red}${bold}Division by zero${norm}\n"
+			echo -en "${red}${bold}Division by zero${norm}\n">&2
 			;;
 		-4)
-			echo -en "${red}${bold}Directory does not exists${norm}\n"
+			echo -en "${red}${bold}Directory does not exists${norm}\n">&2
 			;;
 		-5)
-			echo -en "${red}${bold}File does not exists${norm}\n"
+			echo -en "${red}${bold}File does not exists${norm}\n">&2
 			;;
 		-6)
-			echo -en "${red}${bold}Non-existent command${norm}\n"
+			echo -en "${red}${bold}Non-existent command${norm}\n">&2
 			;;
 		*)
 	esac

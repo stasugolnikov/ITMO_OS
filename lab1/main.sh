@@ -1,23 +1,23 @@
 #! /bin/bash
 . ./task_1.sh
-. ./task_2.sh
-. ./task_3.sh
-. ./task_4.sh
-. ./task_5.sh
-. ./task_6.sh
-. ./task_7.sh
-. ./task_8.sh
+#. ./task_2.sh
+#. ./task_3.sh
+#. ./task_4.sh
+#. ./task_5.sh
+#. ./task_6.sh
+#. ./task_7.sh
+#. ./task_8.sh
 
 case $1 in 
 	'calc')
-		ans=$(calc $2 $3 $4)
+		check=check_args_calc $2 $3 $4
+		echo $check
 		#if [[ $ans =~ ^-?[[:digit:]]+$ ]]
 		#then
 		#	echo "$ans"
 		#else
 		#	echo -en "$ans\n">&2
 		#fi
-		echo $ans
 		;;
 	'search')
 		search $2 $3
