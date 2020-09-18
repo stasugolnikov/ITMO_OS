@@ -30,6 +30,12 @@ function Help {
 	echo -en "${YELLOW} interactive: ${NORMAL}\n"
 	echo -e "\t args: -"
 	echo -e "\t out: interactive menu\n"
+	echo -en "\033[32m Exit codes:\n"
+	echo -e "\t-1 invalid number of arguments\n"
+	echo -e "\t-2 invalid type of arguments\n"
+	echo -e "\t-3 division by zero\n"
+	echo -e "\t-4 directory does not exists\n"
+	echo -e "\t-5 file does not exitst\n"
+	echo -e "\t-6 non-existent command\033[0m\n"
 
-	
 }

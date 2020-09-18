@@ -12,21 +12,21 @@ function options {
 	tput cup 1 15
 	echo "Main Menu:"
 	tput cup 3 12
-	echo "1. calc"
+	echo "a. calc"
 	tput cup 4 12
-	echo "2. search"
+	echo "b. search"
 	tput cup 5 12
-	echo "3. reverse"
+	echo "c. reverse"
 	tput cup 6 12
-	echo "4. strlen"
+	echo "d. strlen"
 	tput cup 7 12
-	echo "5. log"
+	echo "e. log"
 	tput cup 8 12
-	echo "6. exit"
+	echo "f. exit"
 	tput cup 9 12
-	echo "7. help"
+	echo "g. help"
 	tput cup 11 10
-	read -p "Enter your choise [1-7]: " choise
+	read -p "Enter your choise [a-g]: " choise
 }
 function interactive {
 	read -s -p "Press any key to start..." -n 1 ttt
@@ -35,35 +35,37 @@ function interactive {
 	do
 		options
 		case $choise in 
-			1)
+			'a')
 				read com a b
 				calc $com $a $b
 				;;
-			2)
+			'b')
 				read dir exp
-				search $exp $dir
+				search $dir $exp
 				;;
-			3)
+			'c')
 				read file_1 file_2
 				reverse $file_1 $file_2
 				;;
-			4)
+			'd')
 				read str
 				strlen $str
 				;;
-			5)
+			'e')
 				log
 				;;
-			6)
-				read code
+			'f')
+				read -p "Enter the exit code: " code
 				tput clear
 				exit $code
 				;;
-			7)
+			'g')
 				Help
 				;;
 			*)
-				echo "Wrong command"
+				echo -en "\033[31m\033[1mWrong command\033[0m\n">&2
+				Help
+				exit -6
 	
 		esac
 		read -s -p "Press any key to continue..." -n 1 ttt

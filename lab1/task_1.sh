@@ -53,6 +53,7 @@ function select_case {
 		*)
 			echo -en "${red} ${boldface}command does not exists${norm}\n">&2
 			Help
+			exit -6
 	esac
 }
 

@@ -22,7 +22,7 @@ case $1 in
 		strlen $2
 		;;
 	'exit')
-		Exit $2
+		([[ $# -eq 0 ]] && exit 0 || exit $1)
 		;;
 	'log')
 		log
@@ -36,6 +36,7 @@ case $1 in
 		
 	*) 
 		echo -en "\033[31mCommand does not exists \033[m\n" >&2
-		Help		
+		Help
+		exit -6		
 
 esac
