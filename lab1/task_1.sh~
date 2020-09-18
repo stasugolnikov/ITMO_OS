@@ -1,6 +1,5 @@
 #! /bin/bash
 . ./task_7.sh
-. ./exeption.sh
 
 boldface='\033[1m'
 red='\033[31m'
@@ -9,15 +8,12 @@ norm='\033[0m'
 function check_args {
 	if [[ $# < 3 ]]
 	then
-		echo -1
+		echo -en "${red}${boldface}requires 3 arguments, but $# was provided${norm}\n"
 
 	elif ! [[ $2 =~ ^-?[[:digit:]]+$ && $3 =~ ^-?[[:digit:]]+$ ]]
 	then
-		echo -2
+		echo -en "${red}${boldface}arguments must be integers${norm}\n"
 
-	elif [[ $1 == 'div' && $3 -eq 0 ]]
-	then
-		echo -3
 	else
 		echo 0
 	fi
@@ -33,7 +29,12 @@ function mul {
 	echo $[$1 * $2]
 }
 function div {
-	echo $[$1 / $2]
+	if [[ $2 -eq 0 ]]
+	then
+		echo -en "${red}${boldface}division by zero${norm}\n"
+	else
+		echo $[$1 / $2]
+	fi
 }
 
 function select_case {
@@ -51,28 +52,18 @@ function select_case {
 			div $2 $3
 			;;
 		*)
-			echo "bad"
+			echo -en "${red} ${boldface}command does not exists${norm}\n"
 		
 	esac
 }
 
-function calc {
+function calc {     
 	check=$(check_args $1 $2 $3)
-	if [[ $check -ne 0 ]] 
+	if [[ $check -ne 0 ]]
 	then
-		ans=$(print_error $check)
+		echo $check
+	else
+		ans=$(select_case $1 $2 $3)
 		echo $ans
-		return
 	fi
-
-	ans=$(select_case $1 $2 $3)
-	
-	if [[ $ans == "bad" ]]
-	then
-		ans=$(print_error -6)
-		echo $ans
-		return
-	fi
-	echo $ans
-} 
-
+}

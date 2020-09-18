@@ -10,7 +10,14 @@
 
 case $1 in 
 	'calc')
-		calc $2 $3 $4
+		ans=$(calc $2 $3 $4)
+		#if [[ $ans =~ ^-?[[:digit:]]+$ ]]
+		#then
+		#	echo "$ans"
+		#else
+		#	echo -en "$ans\n">&2
+		#fi
+		echo $ans
 		;;
 	'search')
 		search $2 $3
@@ -22,7 +29,14 @@ case $1 in
 		strlen $2
 		;;
 	'exit')
-		([[ $# -eq 0 ]] && exit 0 || exit $1)
+		code=$(check_exit_code $2)
+		if [[ $code == 'bad' ]]
+		then
+			echo -en "\033[31m\033[1mExit code must be integer\033[0m\n">&2
+			exit -2
+		else	
+			exit $code
+		fi
 		;;
 	'log')
 		log

@@ -55,9 +55,15 @@ function interactive {
 				log
 				;;
 			'f')
-				read -p "Enter the exit code: " code
-				tput clear
-				exit $code
+				read -p "Enter the exit code: " x
+				code=$(check_exit_code $x)
+				if [[ $code == 'bad' ]]
+				then
+					echo -en "\033[31m\033[1mExit code must be integer\033[0m\n"
+				else	
+					tput clear
+					exit $code
+				fi
 				;;
 			'g')
 				Help
