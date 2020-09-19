@@ -6,6 +6,7 @@
 . ./task_5.sh
 . ./task_6.sh
 . ./task_7.sh
+. ./exeption.sh
 
 function options {
 	tput clear
@@ -37,7 +38,13 @@ function interactive {
 		case $choise in 
 			'a')
 				read com a b
-				calc $com $a $b
+				check=$(calc_check_args $com $a $b)
+				if [[ $check -eq 0 ]]
+				then 
+					calc $com $a $b
+				else
+					print_error $check
+				fi
 				;;
 			'b')
 				read dir exp

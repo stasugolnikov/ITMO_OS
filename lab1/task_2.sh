@@ -1,23 +1,19 @@
 #! /bin/bash
 
-red='\033[31m'
-boldface='\033[1m'
-norm='\033[0m'
-
-function check_args {
+function search_check_args {
 	if [[ $# < 2 ]]
 	then 
-		echo -en "${red}${boldface}requires 2 argumets, but $# was provided${norm}\n">&2
-		exit -1
+		echo -1
+		exit
 	fi
 	if ! [[ -d $1 ]]
 	then
-		echo -en "${red}${boldface}directory does not exists ${norm}\n">&2
-		exit -4
+		echo -4
+		exit
 	fi
+	echo 0
 }
 
 function search {
-	check_args $1 $2
-	grep -r -n $2 $1
+	grep -r $2 $1 2> /dev/null
 }
