@@ -13,21 +13,21 @@ function options {
 	tput cup 1 15
 	echo "Main Menu:"
 	tput cup 3 12
-	echo "a. calc"
+	echo "1. calc"
 	tput cup 4 12
-	echo "b. search"
+	echo "2. search"
 	tput cup 5 12
-	echo "c. reverse"
+	echo "3. reverse"
 	tput cup 6 12
-	echo "d. strlen"
+	echo "4. strlen"
 	tput cup 7 12
-	echo "e. log"
+	echo "5. log"
 	tput cup 8 12
-	echo "f. exit"
+	echo "6. exit"
 	tput cup 9 12
-	echo "g. help"
+	echo "7. help"
 	tput cup 11 10
-	read -p "Enter your choise [a-g]: " choise
+	read -p "Enter your choise [1-7]: " choise
 }
 function interactive {
 	read -s -p "Press any key to start..." -n 1 ttt
@@ -44,41 +44,57 @@ function interactive {
 					calc $com $a $b
 				else
 					print_error $check
-				fi
-				;;
+				fi ;;
 			'b')
 				read dir exp
-				search $dir $exp
-				;;
+				check=$(search_check_args $dir $exp)
+				if [[ $check -eq 0 ]]
+				then 
+					search $dir $exp
+				else 
+					print_error $check
+				fi ;;
 			'c')
 				read file_1 file_2
-				reverse $file_1 $file_2
-				;;
+				check=$(reverse_check_args $file_1 $file_2)
+				if [[ $check -eq 0 ]]
+				then
+					reverse $file_1 $file_2
+				else
+					print_error $check
+				fi ;;
 			'd')
 				read str
-				strlen $str
-				;;
+				check=$(strlen_check_args $str)
+				if [[ $check -eq 0 ]]
+				then
+					strlen "$str"
+				else
+					print_error $check
+				fi ;;
 			'e')
-				log
-				;;
+				check=$(check_log)
+				if [[ $check -eq 0 ]]
+				then
+					log
+				else
+					print_error $check
+				fi ;;
 			'f')
 				read -p "Enter the exit code: " x
-				code=$(check_exit_code $x)
-				if [[ $code == 'bad' ]]
+				check=$(exit_check_args $x)
+				if [[ $check -eq 0 ]]
 				then
-					echo -en "\033[31m\033[1mExit code must be integer\033[0m\n"
-				else	
 					tput clear
-					exit $code
-				fi
-				;;
+					exit $x
+				else	
+					print_error $check
+				fi ;;
 			'g')
-				Help
-				;;
+				Help ;;
 			*)
-				echo -en "\033[31m\033[1mWrong command\033[0m\n">&2
+				print_error -6
 				Help
-				exit -6
 	
 		esac
 		read -s -p "Press any key to continue..." -n 1 ttt

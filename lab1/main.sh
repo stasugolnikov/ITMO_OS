@@ -1,57 +1,76 @@
 #! /bin/bash
 . ./task_1.sh
-#. ./task_2.sh
-#. ./task_3.sh
+. ./task_2.sh
+. ./task_3.sh
 . ./task_4.sh
-#. ./task_5.sh
-#. ./task_6.sh
-#. ./task_7.sh
-#. ./task_8.sh
-
-
-case $1 in 
+. ./task_5.sh
+. ./task_6.sh
+. ./task_7.sh
+. ./task_8.sh
+. ./exeption.sh
+case $1 in
 	'calc')
-		check=check_args_calc $2 $3 $4
-		echo $check
-		#if [[ $ans =~ ^-?[[:digit:]]+$ ]]
-		#then
-		#	echo "$ans"
-		#else
-		#	echo -en "$ans\n">&2
-		#fi
-		;;
-	'search')
-		search $2 $3
-		;;
-	'reverse')
-		reverse $2 $3
-		;;
-	'strlen')
-		strlen $2
-		;;
-	'exit')
-		code=$(check_exit_code $2)
-		if [[ $code == 'bad' ]]
+		check=$(calc_check_args $2 $3 $4)
+		if [[ $check -eq 0 ]]
 		then
-			echo -en "\033[31m\033[1mExit code must be integer\033[0m\n">&2
-			exit -2
-		else	
-			exit $code
-		fi
-		;;
+			calc $2 $3 $4
+		else
+			print_error $check
+			exit $check
+		fi ;;
+	'search')
+		check=$(search_check_args $2 $3)
+		if [[ $check -eq 0 ]]
+		then
+			search $2 $3
+		else
+			print_error $check
+			exit $check
+		fi ;;
+	'reverse')
+		check=$(reverse_check_args $2 $3)
+		if [[ $check -eq 0 ]]
+		then
+			reverse $2 $3
+		else
+			print_error $check
+			exit $check
+		fi ;;
+	'strlen')
+		check=$(strlen_check_args $2)
+		if [[ $check -eq 0 ]]
+		then
+			strlen "$2"
+		else
+			print_error $check
+			exit $check
+		fi ;;
+	'exit')
+		check=$(exit_check_args $2)
+		if [[ $check -eq 0 ]]
+		then
+			exit $2
+		else
+			print_error $check
+			exit $check
+		fi ;;
 	'log')
-		log
-		;;
+		check=$(check_log)
+		if [[ $chack -eq 0 ]]
+		then
+			log
+		else
+			print_error $check
+			exit $check
+		fi ;;
 	'help')
-		Help
-		;;
-	'interactive')
-		interactive
-		;;
-		
-	*) 
-		echo -en "\033[31mCommand does not exists \033[m\n" >&2
-		Help
-		exit -6		
+		Help ;;
 
+	'interactive')
+		interactive ;;
+	*)
+		print_error -6
+		Help
+		exit -6
 esac
+
