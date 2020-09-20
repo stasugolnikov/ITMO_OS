@@ -36,7 +36,7 @@ function interactive {
 	do
 		options
 		case $choise in 
-			'a')
+			'1')
 				read com a b
 				check=$(calc_check_args $com $a $b)
 				if [[ $check -eq 0 ]]
@@ -45,7 +45,7 @@ function interactive {
 				else
 					print_error $check
 				fi ;;
-			'b')
+			'2')
 				read dir exp
 				check=$(search_check_args $dir $exp)
 				if [[ $check -eq 0 ]]
@@ -54,7 +54,7 @@ function interactive {
 				else 
 					print_error $check
 				fi ;;
-			'c')
+			'3')
 				read file_1 file_2
 				check=$(reverse_check_args $file_1 $file_2)
 				if [[ $check -eq 0 ]]
@@ -63,7 +63,7 @@ function interactive {
 				else
 					print_error $check
 				fi ;;
-			'd')
+			'4')
 				read str
 				check=$(strlen_check_args $str)
 				if [[ $check -eq 0 ]]
@@ -72,7 +72,7 @@ function interactive {
 				else
 					print_error $check
 				fi ;;
-			'e')
+			'5')
 				check=$(check_log)
 				if [[ $check -eq 0 ]]
 				then
@@ -80,7 +80,7 @@ function interactive {
 				else
 					print_error $check
 				fi ;;
-			'f')
+			'6')
 				read -p "Enter the exit code: " x
 				check=$(exit_check_args $x)
 				if [[ $check -eq 0 ]]
@@ -90,7 +90,7 @@ function interactive {
 				else	
 					print_error $check
 				fi ;;
-			'g')
+			'7')
 				Help ;;
 			*)
 				print_error -6
