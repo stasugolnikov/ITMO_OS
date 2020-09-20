@@ -56,7 +56,7 @@ case $1 in
 		fi ;;
 	'log')
 		check=$(check_log)
-		if [[ $chack -eq 0 ]]
+		if [[ $check -eq 0 ]]
 		then
 			log
 		else
