@@ -42,7 +42,8 @@ case $1 in
 		then
 			strlen "$2"
 		else
-			echo 0
+			print_error $check
+			exit $check
 		fi ;;
 	'exit')
 		check=$(exit_check_args $2)

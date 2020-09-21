@@ -70,7 +70,7 @@ function interactive {
 				then
 					strlen "$str"
 				else
-					echo 0
+					print_error $check
 				fi ;;
 			'5')
 				check=$(check_log)
