@@ -37,7 +37,7 @@ case $1 in
 			exit $check
 		fi ;;
 	'strlen')
-		check=$(strlen_check_args $2)
+		check=$(strlen_check_args "$2")
 		if [[ $check -eq 0 ]]
 		then
 			strlen "$2"

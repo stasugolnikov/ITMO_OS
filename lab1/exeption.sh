@@ -24,6 +24,8 @@ function print_error {
 		-6)
 			echo -en "${red}${bold}Non-existent command${norm}\n">&2
 			;;
-		*)
+		-7)
+			echo -en "${red}${bold}File unavaliable to write or does not exists${norm}\n">&2 
+			;;
 	esac
 }
