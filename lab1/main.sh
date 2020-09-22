@@ -39,14 +39,7 @@ case $1 in
 	'strlen')
 		if ! [[ $# -eq 1 ]]
 		then 
-			check=$(strlen_check_args "$2")
-			if [[ $check -eq 0 ]]
-			then
-				strlen "$2"
-			else
-				print_error $check
-				exit $check
-			fi
+			strlen "$2"
 		else
 			print_error -1
 		fi ;;	       
