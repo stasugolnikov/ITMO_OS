@@ -11,15 +11,17 @@ function reverse_check_args {
 		echo -5
 		exit
 	fi
-	if ! [[ -w "$2" ]]
-	then
+	text=$(tac $1 2>/dev/null)
+	if [[ $? -eq 1 ]]
+	then 
 		echo -7
 		exit
 	fi
+
 	echo 0
 }
 
 function reverse {
-	text=$(tac $1) 2>/dev/null
+	text=$(tac $1 2>/dev/null)
 	echo "$text" | rev>$2
 }

@@ -19,13 +19,13 @@ function print_error {
 			echo -en "${red}${bold}Directory does not exists${norm}\n">&2
 			;;
 		-5)
-			echo -en "${red}${bold} File or directory does not exists${norm}\n">&2
+			echo -en "${red}${bold}File or directory does not exists${norm}\n">&2
 			;;
 		-6)
 			echo -en "${red}${bold}Non-existent command${norm}\n">&2
 			;;
 		-7)
-			echo -en "${red}${bold}File unavaliable to write or does not exists${norm}\n">&2 
+			echo -en "${red}${bold}File unavaliable to write${norm}\n">&2 
 			;;
 	esac
 }
