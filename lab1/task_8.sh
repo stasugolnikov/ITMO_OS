@@ -37,7 +37,7 @@ function interactive {
 		options
 		case $choise in 
 			'1')
-				read com a b
+				read -p "Enter <command> <num1> <num2>: " com a b
 				check=$(calc_check_args $com $a $b)
 				if [[ $check -eq 0 ]]
 				then 
@@ -46,7 +46,7 @@ function interactive {
 					print_error $check
 				fi ;;
 			'2')
-				read dir exp
+				read -p "Enter <directory> <regular_expression>: " dir exp
 				check=$(search_check_args $dir $exp)
 				if [[ $check -eq 0 ]]
 				then 
@@ -55,7 +55,7 @@ function interactive {
 					print_error $check
 				fi ;;
 			'3')
-				read file_1 file_2
+				read -p "Enter <file_name1> <file_name2>: " file_1 file_2
 				check=$(reverse_check_args $file_1 $file_2)
 				if [[ $check -eq 0 ]]
 				then
@@ -64,7 +64,7 @@ function interactive {
 					print_error $check
 				fi ;;
 			'4')
-				read str
+				read -p "Enter <string>: " str
 				check=$(strlen_check_args $str)
 				if [[ $check -eq 0 ]]
 				then
@@ -81,7 +81,7 @@ function interactive {
 					print_error $check
 				fi ;;
 			'6')
-				read -p "Enter the exit code: " x
+				read -p "Enter <exit_code>: " x
 				check=$(exit_check_args $x)
 				if [[ $check -eq 0 ]]
 				then

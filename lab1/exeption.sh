@@ -25,7 +25,7 @@ function print_error {
 			echo -en "${red}${bold}Non-existent command${norm}\n">&2
 			;;
 		-7)
-			echo -en "${red}${bold}File unavaliable to write${norm}\n">&2 
+			echo -en "${red}${bold}File unavaliable to read${norm}\n">&2 
 			;;
 	esac
 }
