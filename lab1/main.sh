@@ -42,6 +42,7 @@ case $1 in
 			strlen "$2"
 		else
 			print_error -1
+			exit -1
 		fi ;;	       
 	'exit')
 		check=$(exit_check_args $2)
