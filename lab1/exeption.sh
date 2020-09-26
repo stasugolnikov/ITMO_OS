@@ -27,5 +27,8 @@ function print_error {
 		-7)
 			echo -en "${red}${bold}File unavaliable to read${norm}\n">&2 
 			;;
+		-8)
+			echo -en "${red}${bold}File unavaliable to write${norm}\n">&2
+			;;
 	esac
 }

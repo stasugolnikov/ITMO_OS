@@ -17,7 +17,11 @@ function reverse_check_args {
 		echo -7
 		exit
 	fi
-
+	if ! [[ -r $2 ]]
+	then
+		echo -8
+		exit
+	fi	
 	echo 0
 }
 
