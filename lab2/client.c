@@ -10,9 +10,8 @@ int main(int argc, char* argv[]) {
     struct sockaddr_in adr = {0};
     adr.sin_family = AF_INET;
     adr.sin_port = htons(34543);
-    Inet_pton(AF_INET,"127.0.0.1", &adr.sin_addr);
     Connect(fd, (struct sockaddr*) &adr, sizeof(adr));
-    write(fd, argv[1] ,6);
+    write(fd, argv[1], 6);
     char buf[256];
     int num_read = read(fd, buf, 256);
     write(fd, buf, 256);
