@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include "wrappers.h"
 
-int main() {
+int main(int argc, char* argv[]) {
     int server = Socket(AF_INET, SOCK_STREAM, 0); 
     struct sockaddr_in adr = {0};
     adr.sin_family = AF_INET;
@@ -22,8 +22,9 @@ int main() {
 	perror("read failed");
 	exit(EXIT_FAILURE);
     }
-    write(STDOUT_FILENO, buf, num_read);
+    fprintf(stdout, "%s is argv[1]\n", buf);
     write(sock, buf, num_read);
     close(sock);
+    close(server);
     return 0;
 }

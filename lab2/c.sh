@@ -1,1 +1,1 @@
-gcc client.c wrappers.c -W -Wall -Werror -o client
+gcc client.c wrappers.c -o client

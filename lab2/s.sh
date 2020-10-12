@@ -1,1 +1,1 @@
-gcc server.c wrappers.c -W -Wall -Werror -o server
+gcc server.c wrappers.c -o server
