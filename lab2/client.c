@@ -13,13 +13,9 @@ int main(int argc, char* argv[]) {
     Inet_pton(AF_INET,"127.0.0.1", &adr.sin_addr);
     Connect(fd, (struct sockaddr*) &adr, sizeof(adr));
     write(fd, "hello\n",6);
-    while(1) {
-	char buf[256];
-    	int num_read = read(fd, buf, 256);
-	write(fd, buf, 256);
-	close(fd);
-    }
-    
-
+    char buf[256];
+    int num_read = read(fd, buf, 256);
+    write(fd, buf, 256);
+    close(fd);
     return 0;
 }
