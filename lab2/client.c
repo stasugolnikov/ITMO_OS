@@ -3,18 +3,28 @@
 #include "wrappers.h"
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <stdio.h>
 
 
 int main(int argc, char* argv[]) {   
-    int fd = Socket(AF_INET, SOCK_STREAM, 0);
+    int sock = Socket(AF_INET, SOCK_STREAM, 0);
+    
     struct sockaddr_in adr = {0};
+    
     adr.sin_family = AF_INET;
     adr.sin_port = htons(34543);
-    Connect(fd, (struct sockaddr*) &adr, sizeof(adr));
-    write(fd, argv[1], 6);
+    
+    Connect(sock, (struct sockaddr*) &adr, sizeof(adr));
+    char* message;
+    fgets(message, 256, stdin);
+    write(sock, message, 256);
+   
     char buf[256];
-    int num_read = read(fd, buf, 256);
-    write(fd, buf, 256);
-    close(fd);
+    read(sock, buf, 256);
+
+    printf("%s", buf);
+   
+    
+    close(sock);
     return 0;
 }

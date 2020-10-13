@@ -1,1 +1,1 @@
-gcc server.c wrappers.c  -o server
+gcc server.c wrappers.c -w -o server
