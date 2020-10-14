@@ -1,1 +1,1 @@
-gcc server.c wrappers.c -w -o server
+g++ server.cpp wrappers.cpp -w -o server

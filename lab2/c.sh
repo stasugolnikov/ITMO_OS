@@ -1,1 +1,1 @@
-gcc client.c wrappers.c -w -o client 
+g++ client.cpp wrappers.cpp -w -o client 
