@@ -23,11 +23,11 @@ int main(int argc, char* argv[]) {
     
     Connect(sock, (struct sockaddr*) &adr, sizeof(adr));   
  	
-    std::string buf;
+    char* buf;
 	
-    std::getline(std::cin, buf);
+    gets(buf);
 
-    write(sock, buf.c_str(), 256);
+    write(sock, buf, 256);
 
     close(sock);
     return 0;
