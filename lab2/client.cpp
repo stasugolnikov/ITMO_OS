@@ -23,9 +23,9 @@ int main(int argc, char* argv[]) {
     
     Connect(sock, (struct sockaddr*) &adr, sizeof(adr));   
  	
-    char* buf;
+    char buf[256];
 	
-    gets(buf);
+    fgets(buf, 256, stdin);
 
     write(sock, buf, 256);
 
