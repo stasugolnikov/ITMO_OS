@@ -11,8 +11,6 @@
 #include <string>
 #include <vector>
 
-
-
 int main(int argc, char* argv[]) {   
     int sock = Socket(AF_INET, SOCK_STREAM, 0);
     
@@ -25,7 +23,11 @@ int main(int argc, char* argv[]) {
  	
     char buf[256];
 	
+    printf("Enter user ID, process, args: ");
+
     fgets(buf, 256, stdin);
+
+    buf[strlen(buf) - 1] = '\0';
 
     write(sock, buf, 256);
 

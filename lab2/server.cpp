@@ -11,7 +11,6 @@
 #include <string>
 #include <vector>
 
-
 void parse(std::vector<char *> &strs, char str[]) {
     char *substr = strtok(str, " ");
     while (substr) {
@@ -39,13 +38,17 @@ int main(int argc, char *argv[]) {
     read(sock, buf, 256);
     std::vector<char *> strs;
     parse(strs, buf);
-
-
     strs.push_back(NULL);
-
-    char **args = &strs[0];
-
-    execv(args[0], args);
+    std::cout << "Parent: "<< getuid() << '\n';
+    pid_t pr = fork();
+    if (pr == 0) {
+        uid_t uid = std::stoll(strs.front());
+        char **args = &strs[1];
+        setuid(uid);
+        std::cout << "Child: "<< getuid() << '\n';
+        execv(args[0], args);
+        exit(0);
+    }
 
     close(sock);
     close(server);
