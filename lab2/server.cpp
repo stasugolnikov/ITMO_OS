@@ -1,4 +1,5 @@
 #include <arpa/inet.h>
+#include <fcntl.h>
 #include <netinet/in.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -17,20 +18,41 @@ void split(std::vector<char *> &strs, char str[]) {
         strs.push_back(substr);
         substr = strtok(NULL, " ");
     }
-}
+
 
 void run_process(std::vector<char *> strs) {
-    pid_t pid = fork();
-    if (pid == -1) exit(2);
+    int fd[2][2];
+    pipe(fd[0]);
+    pipe(fd[1]);
 
-    if (pid == 0) {
-        uid_t uid = std::stoll(strs.front());
-        char **args = &strs[1];
+    pid_t pid_fork = fork();
+
+    if (!pid_fork) {
+        close(fd[0][1]);
+        close(fd[1][0]);
+
+        uid_t uid = std::stoi(strs.front());
         Setuid(uid);
-        //dup2(sock, 1);
+        char **args = &strs[1];
+
+        dup2(fd[1][1], STDOUT_FILENO);
+
         execv(args[0], args);
     } else {
-        //
+        close(fd[0][0]);
+        close(fd[1][1]);
+
+        char buf[1000];
+
+        ssize_t sz;
+        close(fd[0][1]);
+
+        sz = read(fd[1][0], buf, sizeof(buf));
+
+        int fd = open("file.log", O_WRONLY | O_CREAT, 0777);
+        if (sz > 0) {
+            write(fd, buf, sz);
+        }
     }
 }
 
