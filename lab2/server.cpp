@@ -1,21 +1,36 @@
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <unistd.h>
-#include <string.h>
-#include "wrappers.h"
+
 #include <iostream>
 #include <string>
 #include <vector>
 
-void parse(std::vector<char *> &strs, char str[]) {
+#include "wrappers.h"
+
+void split(std::vector<char *> &strs, char str[]) {
     char *substr = strtok(str, " ");
     while (substr) {
         strs.push_back(substr);
         substr = strtok(NULL, " ");
+    }
+}
+
+void run_process(std::vector<char *> strs) {
+    pid_t pid = fork();
+    if (pid == -1) exit(2);
+
+    if (pid == 0) {
+        uid_t uid = std::stoll(strs.front());
+        char **args = &strs[1];
+        Setuid(uid);
+        //dup2(sock, 1);
+        execv(args[0], args);
+    } else {
+        //
     }
 }
 
@@ -24,7 +39,7 @@ int main(int argc, char *argv[]) {
 
     struct sockaddr_in adr = {0};
     adr.sin_family = AF_INET;
-    adr.sin_port = htons(34543);
+    adr.sin_port = htons(34546);
 
     Bind(server, (struct sockaddr *)&adr, sizeof(adr));
 
@@ -35,20 +50,13 @@ int main(int argc, char *argv[]) {
 
     char buf[256];
 
-    read(sock, buf, 256);
+    if (read(sock, buf, 256) == -1) exit(1);
+
     std::vector<char *> strs;
-    parse(strs, buf);
+    split(strs, buf);
     strs.push_back(NULL);
-    std::cout << "Parent: "<< getuid() << '\n';
-    pid_t pr = fork();
-    if (pr == 0) {
-        uid_t uid = std::stoll(strs.front());
-        char **args = &strs[1];
-        setuid(uid);
-        std::cout << "Child: "<< getuid() << '\n';
-        execv(args[0], args);
-        exit(0);
-    }
+
+    run_process(strs);
 
     close(sock);
     close(server);

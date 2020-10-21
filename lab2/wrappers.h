@@ -14,6 +14,6 @@ int Accept(int s, struct sockaddr* addr, socklen_t* addrlen);
 
 void Connect(int s, const struct sockaddr* addr, socklen_t addrlen);
 
-void Inet_pton (int af, const char* src, void* dst);
+void Setuid(uid_t uid);
 
 #endif
