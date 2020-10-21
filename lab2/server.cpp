@@ -1,12 +1,10 @@
 #include <arpa/inet.h>
 #include <fcntl.h>
-#include <netinet/in.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -18,18 +16,24 @@ void split(std::vector<char *> &strs, char str[]) {
         strs.push_back(substr);
         substr = strtok(NULL, " ");
     }
+}
 
-
-void run_process(std::vector<char *> strs) {
+void run_process(std::vector<char *> &strs) {
     int fd[2][2];
     pipe(fd[0]);
     pipe(fd[1]);
 
-    pid_t pid_fork = fork();
+    pid_t pid = fork();
 
-    if (!pid_fork) {
+    if (pid == -1) {
+        perror("fork failed");
+        exit(EXIT_FAILURE);
+    }
+
+    if (!pid) {
         close(fd[0][1]);
         close(fd[1][0]);
+        close(fd[0][0]);
 
         uid_t uid = std::stoi(strs.front());
         Setuid(uid);
@@ -38,21 +42,21 @@ void run_process(std::vector<char *> strs) {
         dup2(fd[1][1], STDOUT_FILENO);
 
         execv(args[0], args);
+        close(fd[1][1]);
     } else {
         close(fd[0][0]);
         close(fd[1][1]);
-
-        char buf[1000];
-
-        ssize_t sz;
         close(fd[0][1]);
 
-        sz = read(fd[1][0], buf, sizeof(buf));
-
-        int fd = open("file.log", O_WRONLY | O_CREAT, 0777);
-        if (sz > 0) {
-            write(fd, buf, sz);
+        int log_file = open("file.log", O_WRONLY | O_CREAT, 0777);
+        
+        ssize_t nread;
+        char buf[1000];
+        while ((nread = read(fd[1][0], buf, sizeof(buf)))) {
+            write(log_file, buf, nread);
         }
+
+        close(fd[1][0]);
     }
 }
 
