@@ -19,49 +19,8 @@ void split(std::vector<char *> &strs, char str[]) {
     }
 }
 
-void run_process_foreground(std::vector<char *> &strs, int &fd_out, int &fd_err) {
-    int fd_stdout[2];
-    int fd_stderr[2];
 
-    if (pipe(fd_stdout) == -1 || pipe(fd_stderr) == -1) {
-        perror("pipe failed");
-        exit(EXIT_FAILURE);
-    }
-
-    pid_t pid = fork();
-
-    if (pid == -1) {
-        perror("fork failed");
-        exit(EXIT_FAILURE);
-    }
-
-    if (!pid) {
-        close(fd_stdout[0]);
-
-        uid_t uid = std::stoi(strs.front());
-        Setuid(uid);
-        char **args = &strs[1];
-
-        dup2(fd_stdout[1], STDOUT_FILENO);
-        dup2(fd_stderr[1], STDERR_FILENO);
-
-        execv(args[0], args);
-        close(fd_stdout[1]);
-    } else {
-        ssize_t nread;
-        char buff[1000];
-        std::string ans;
-        while (read(fd_stdout[0], buff, sizeof(buff))) {
-            std::cout << ans << '\n';
-            ans += buff;
-            read(fd_out, buff, sizeof(buff));
-        }
-        fd_out = fd_stdout[0];
-        fd_err = fd_stderr[0];
-    }
-}
-
-void run_process_background(std::vector<char *> &strs, int &fd_out, int &fd_err) {
+void run_process_background(std::vector<char *> &strs, std::string& out) {
     int fd_stdout[2];
     int fd_stderr[2];
 
@@ -100,15 +59,57 @@ void run_process_background(std::vector<char *> &strs, int &fd_out, int &fd_err)
 
         ssize_t nread;
         char buf[1000];
-        std::string s;
+        std::string str;
         while ((nread = read(fd_stdout[0], buf, sizeof(buf)))) {
-            s += buf;
+            str += buf;
             write(log_file, buf, nread);
         }
-        std::cout << s;
+        out = str;
         close(fd_stdout[0]);
-        //fd_out = fd_stdout[0];
-        //fd_err = fd_stderr[0];
+    }
+}
+
+void run_process_foreground(std::vector<char *> &strs, std::string &out, int &code) {
+    int fd_stdout[2];
+    int fd_stderr[2];
+
+    if (pipe(fd_stdout) == -1 || pipe(fd_stderr) == -1) {
+        perror("pipe failed");
+        exit(EXIT_FAILURE);
+    }
+
+    pid_t pid = fork();
+
+    if (pid == -1) {
+        perror("fork failed");
+        exit(EXIT_FAILURE);
+    }
+
+    if (!pid) {
+        close(fd_stdout[0]);
+
+        uid_t uid = std::stoi(strs.front());
+        Setuid(uid);
+        char **args = &strs[1];
+
+        dup2(fd_stdout[1], STDOUT_FILENO);
+        dup2(fd_stderr[1], STDERR_FILENO);
+
+        execv(args[0], args);
+        close(fd_stdout[1]);
+    } else {
+        close(fd_stdout[1]);
+        int wstatus;
+        wait(&wstatus);
+        code = WEXITSTATUS(wstatus);
+        ssize_t nread;
+        char buf[1000];
+        std::string str;
+        while ((nread = read(fd_stdout[0], buf, sizeof(buf)))) {
+            str += buf;
+        }
+        out = str;
+        close(fd_stdout[0]);
     }
 }
 
@@ -133,8 +134,13 @@ int main(int argc, char *argv[]) {
     std::vector<char *> strs;
     split(strs, buf);
     strs.push_back(NULL);
-    int fd_out, fd_err;
-    run_process_background(strs, fd_out, fd_err);
+    std::string out;
+    int code;
+    run_process_foreground(strs, out, code);
+    write(sock, out.c_str(), 1000);
+    write(sock, &code, 8);
+
+    std::cout << out;
 
     close(sock);
     close(server);

@@ -32,6 +32,12 @@ int main(int argc, char* argv[]) {
     buf[strlen(buf) - 1] = '\0';
 
     write(sock, buf, 256);
+    char buff[1000];
+    int code;
+    read(sock, buff, 1000);
+    read(sock, &code, 8);
+    printf("%s\n", buff);
+    printf("Process finished with exit code %d\n", code);
 
     close(sock);
     return 0;
