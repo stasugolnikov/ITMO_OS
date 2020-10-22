@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -18,10 +19,14 @@ void split(std::vector<char *> &strs, char str[]) {
     }
 }
 
-void run_process(std::vector<char *> &strs) {
-    int fd[2][2];
-    pipe(fd[0]);
-    pipe(fd[1]);
+void run_process_foreground(std::vector<char *> &strs, int &fd_out, int &fd_err) {
+    int fd_stdout[2];
+    int fd_stderr[2];
+
+    if (pipe(fd_stdout) == -1 || pipe(fd_stderr) == -1) {
+        perror("pipe failed");
+        exit(EXIT_FAILURE);
+    }
 
     pid_t pid = fork();
 
@@ -31,32 +36,79 @@ void run_process(std::vector<char *> &strs) {
     }
 
     if (!pid) {
-        close(fd[0][1]);
-        close(fd[1][0]);
-        close(fd[0][0]);
+        close(fd_stdout[0]);
 
         uid_t uid = std::stoi(strs.front());
         Setuid(uid);
         char **args = &strs[1];
 
-        dup2(fd[1][1], STDOUT_FILENO);
+        dup2(fd_stdout[1], STDOUT_FILENO);
+        dup2(fd_stderr[1], STDERR_FILENO);
 
         execv(args[0], args);
-        close(fd[1][1]);
+        close(fd_stdout[1]);
     } else {
-        close(fd[0][0]);
-        close(fd[1][1]);
-        close(fd[0][1]);
+        ssize_t nread;
+        char buff[1000];
+        std::string ans;
+        while (read(fd_stdout[0], buff, sizeof(buff))) {
+            std::cout << ans << '\n';
+            ans += buff;
+            read(fd_out, buff, sizeof(buff));
+        }
+        fd_out = fd_stdout[0];
+        fd_err = fd_stderr[0];
+    }
+}
+
+void run_process_background(std::vector<char *> &strs, int &fd_out, int &fd_err) {
+    int fd_stdout[2];
+    int fd_stderr[2];
+
+    if (pipe(fd_stdout) == -1 || pipe(fd_stderr) == -1) {
+        perror("pipe failed");
+        exit(EXIT_FAILURE);
+    }
+
+    pid_t pid_child = fork();
+
+    if (pid_child == -1) {
+        perror("fork failed");
+        exit(EXIT_FAILURE);
+    }
+
+    if (!pid_child) {
+        close(fd_stdout[0]);
+        close(fd_stderr[0]);
+        dup2(fd_stdout[1], STDOUT_FILENO);
+        dup2(fd_stderr[1], STDERR_FILENO);
+
+        pid_t pid_grandchild = fork();
+        if (!pid_grandchild) {
+            uid_t uid = std::stoi(strs.front());
+            Setuid(uid);
+            char **args = &strs[1];
+            execv(args[0], args);
+        }
+        exit(0);
+        close(fd_stdout[1]);
+
+    } else {
+        close(fd_stdout[1]);
 
         int log_file = open("file.log", O_WRONLY | O_CREAT, 0777);
-        
+
         ssize_t nread;
         char buf[1000];
-        while ((nread = read(fd[1][0], buf, sizeof(buf)))) {
+        std::string s;
+        while ((nread = read(fd_stdout[0], buf, sizeof(buf)))) {
+            s += buf;
             write(log_file, buf, nread);
         }
-
-        close(fd[1][0]);
+        std::cout << s;
+        close(fd_stdout[0]);
+        //fd_out = fd_stdout[0];
+        //fd_err = fd_stderr[0];
     }
 }
 
@@ -81,8 +133,8 @@ int main(int argc, char *argv[]) {
     std::vector<char *> strs;
     split(strs, buf);
     strs.push_back(NULL);
-
-    run_process(strs);
+    int fd_out, fd_err;
+    run_process_background(strs, fd_out, fd_err);
 
     close(sock);
     close(server);
