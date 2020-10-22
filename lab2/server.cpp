@@ -19,12 +19,12 @@ void split(std::vector<char *> &strs, char str[]) {
     }
 }
 
-
-void run_process_background(std::vector<char *> &strs, std::string& out) {
+void run_process_background(std::vector<char *> &strs, int &code) {
     int fd_stdout[2];
     int fd_stderr[2];
+    int fd_code[2];
 
-    if (pipe(fd_stdout) == -1 || pipe(fd_stderr) == -1) {
+    if (pipe(fd_stdout) == -1 || pipe(fd_stderr) == -1 || pipe(fd_code) == -1) {
         perror("pipe failed");
         exit(EXIT_FAILURE);
     }
@@ -39,6 +39,7 @@ void run_process_background(std::vector<char *> &strs, std::string& out) {
     if (!pid_child) {
         close(fd_stdout[0]);
         close(fd_stderr[0]);
+        close(fd_code[0]);
         dup2(fd_stdout[1], STDOUT_FILENO);
         dup2(fd_stderr[1], STDERR_FILENO);
 
@@ -46,25 +47,27 @@ void run_process_background(std::vector<char *> &strs, std::string& out) {
         if (!pid_grandchild) {
             uid_t uid = std::stoi(strs.front());
             Setuid(uid);
-            char **args = &strs[1];
+            char **args = &strs[2];
             execv(args[0], args);
+        } else {
+            int wstatus;
+            wait(&wstatus);
+            int exit_code = WEXITSTATUS(wstatus);
+            write(fd_code[1], &exit_code, 8);
+            close(fd_stdout[1]);
         }
-        exit(0);
-        close(fd_stdout[1]);
-
     } else {
         close(fd_stdout[1]);
+
+        read(fd_code[0], &code, 8);
 
         int log_file = open("file.log", O_WRONLY | O_CREAT, 0777);
 
         ssize_t nread;
         char buf[1000];
-        std::string str;
         while ((nread = read(fd_stdout[0], buf, sizeof(buf)))) {
-            str += buf;
             write(log_file, buf, nread);
         }
-        out = str;
         close(fd_stdout[0]);
     }
 }
@@ -90,7 +93,7 @@ void run_process_foreground(std::vector<char *> &strs, std::string &out, int &co
 
         uid_t uid = std::stoi(strs.front());
         Setuid(uid);
-        char **args = &strs[1];
+        char **args = &strs[2];
 
         dup2(fd_stdout[1], STDOUT_FILENO);
         dup2(fd_stderr[1], STDERR_FILENO);
@@ -104,11 +107,9 @@ void run_process_foreground(std::vector<char *> &strs, std::string &out, int &co
         code = WEXITSTATUS(wstatus);
         ssize_t nread;
         char buf[1000];
-        std::string str;
         while ((nread = read(fd_stdout[0], buf, sizeof(buf)))) {
-            str += buf;
+            out += buf;
         }
-        out = str;
         close(fd_stdout[0]);
     }
 }
@@ -134,13 +135,22 @@ int main(int argc, char *argv[]) {
     std::vector<char *> strs;
     split(strs, buf);
     strs.push_back(NULL);
-    std::string out;
-    int code;
-    run_process_foreground(strs, out, code);
-    write(sock, out.c_str(), 1000);
-    write(sock, &code, 8);
 
-    std::cout << out;
+    if (strcmp(strs[1], "foreground") == 0) {
+        std::string out;
+        int code;
+        run_process_foreground(strs, out, code);
+        write(sock, out.c_str(), 1000);
+        write(sock, &code, 8);
+        return 0;
+    }
+
+    if (strcmp(strs[1], "background") == 0) {
+        int code;
+        run_process_background(strs, code);
+        write(sock, &code, 8);
+        return 0;
+    }
 
     close(sock);
     close(server);

@@ -25,13 +25,14 @@ int main(int argc, char* argv[]) {
 
     char buf[256];
 
-    printf("Enter user ID, process, args: ");
+    printf("Enter user ID, status, process, args: ");
 
     fgets(buf, 256, stdin);
 
     buf[strlen(buf) - 1] = '\0';
 
     write(sock, buf, 256);
+    
     char buff[1000];
     int code;
     read(sock, buff, 1000);
