@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
     adr.sin_port = htons(34546);
 
     Connect(sock, (struct sockaddr*)&adr, sizeof(adr));
-
+    
     char buf[256];
 
     printf("Enter user ID, status, process, args: ");

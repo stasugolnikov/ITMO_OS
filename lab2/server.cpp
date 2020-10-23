@@ -113,8 +113,23 @@ void run_process_foreground(std::vector<char *> &strs, std::string &out, int &co
         close(fd_stdout[0]);
     }
 }
+void background() {
+    pid_t pid = fork();
+
+    if (pid == -1) {
+        perror("fork failed");
+        exit(EXIT_FAILURE);
+    }
+
+    if (pid == 0) {
+        setsid();
+    } else {
+        exit(0);
+    }
+}
 
 int main(int argc, char *argv[]) {
+    background();
     int server = Socket(AF_INET, SOCK_STREAM, 0);
 
     struct sockaddr_in adr = {0};
@@ -130,7 +145,9 @@ int main(int argc, char *argv[]) {
 
     char buf[256];
 
-    if (read(sock, buf, 256) == -1) exit(1);
+    if (read(sock, buf, 256) == -1) {
+        exit(1);
+    }
 
     std::vector<char *> strs;
     split(strs, buf);
