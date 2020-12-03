@@ -159,17 +159,15 @@ int main(int argc, char *argv[]) {
         run_process_foreground(strs, out, code);
         write(sock, out.c_str(), 1000);
         write(sock, &code, 8);
-        return 0;
     }
 
     if (strcmp(strs[1], "background") == 0) {
         int code;
         run_process_background(strs, code);
         write(sock, &code, 8);
-        return 0;
     }
-
     close(sock);
+
     close(server);
     return 0;
 }
