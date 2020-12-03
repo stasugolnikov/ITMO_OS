@@ -1,9 +1,10 @@
 #/bin/bash
 
-at -f ./task_1.sh now + 2 minutes 2>/dev/null
+sleep 2m &
+./task_1.sh
 
 if [[ $? -ne 0 ]]; then
-    echo "Something went wrong"
+    echo "Something went wrong">&2
     exit 1
 fi
 
