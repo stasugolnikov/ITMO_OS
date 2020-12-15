@@ -1,0 +1,9 @@
+/Users/ugolnikov/ITMO_OS/lab2
+
+client
+client.cpp
+s.sh
+server
+server.cpp
+wrappers.cpp
+wrappers.h
