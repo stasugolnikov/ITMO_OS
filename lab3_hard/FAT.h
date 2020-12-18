@@ -1,12 +1,7 @@
 #pragma once
 
 #include <cstdint>
-
-enum FAT_Type {
-    FAT12,
-    FAT16,
-    FAT32
-};
+#include <vector>
 
 
 struct BPB {
@@ -43,15 +38,67 @@ struct BS {
     char BS_FilSysType[8];
 };
 
-
-class FAT {
-    BPB BIOS_ParameterBlock;
-    BS BootSector;
-
-public:
-    FAT(FAT_Type, uint32_t);
-
-    void CreateFAT(const char*);
+struct DE {
+    unsigned char fileName[8];
+    unsigned char fileExt[3];
+    unsigned char attributes;
+    unsigned char caseFlag;
+    unsigned char createTimeMS;
+    unsigned short createTime;
+    unsigned short createDate;
+    unsigned short accessedDate;
+    unsigned short startClusterH;
+    unsigned short timestamp;
+    unsigned short datestamp;
+    unsigned short startClusterL;
+    unsigned long fileSize;
 };
 
+
+class FAT {
+protected:
+    std::vector<uint32_t> FATTable;
+    BPB BIOS_ParameterBlock;
+    BS BootSector;
+    DE DirEntry;
+    uint32_t clustersAmount;
+    uint32_t diskDescriptor;
+    uint32_t firstDataSector;
+    uint32_t rootDirSectors;
+
+    uint32_t ReadSectors(uint32_t, void *, uint32_t);
+
+    uint32_t WriteSectors(uint32_t, void *, uint32_t);
+
+public:
+    FAT(uint32_t);
+
+    void CreateFAT(const char *);
+
+    uint32_t ReadCluster(uint32_t, void *);
+
+    uint32_t WriteCluster(uint32_t, void *);
+
+    void ReadFat(uint32_t, uint32_t *);
+
+    void WriteFat(uint32_t, uint32_t);
+
+    uint32_t FindFirstAvailableCluster();
+
+    std::vector<uint32_t> GetClusterChain(uint32_t startCluster);
+
+};
+
+class FAT12 : FAT {
+public:
+    FAT12(uint32_t);
+};
+
+class FAT16 : FAT {
+    FAT16(uint32_t);
+};
+
+class FAT32 : FAT {
+    FAT32(uint32_t);
+};
 
