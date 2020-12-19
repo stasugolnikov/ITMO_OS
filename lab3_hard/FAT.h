@@ -89,16 +89,16 @@ public:
 
 };
 
-class FAT12 : FAT {
+class FAT12 : public FAT {
 public:
     FAT12(uint32_t);
 };
 
-class FAT16 : FAT {
+class FAT16 : public FAT {
     FAT16(uint32_t);
 };
 
-class FAT32 : FAT {
+class FAT32 : public FAT {
     FAT32(uint32_t);
 };
 

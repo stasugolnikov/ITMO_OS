@@ -3,4 +3,4 @@ project(lab3_hard)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(lab3_hard main.cpp fat.h FAT.cpp FAT.h EXT2.h)
+add_executable(lab3_hard main.cpp FAT.cpp FAT.h EXT2.h)
