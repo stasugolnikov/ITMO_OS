@@ -183,7 +183,4 @@ int main(int argc, char *argv[]) {
         }
 
     }
-    close(sock);
-    close(server);
-    return 0;
 }
