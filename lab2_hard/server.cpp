@@ -19,8 +19,6 @@ void split(std::vector<char *> &strs, char str[]) {
     }
 }
 
-std::ofstream fout("out.txt");
-
 void run_process_background(std::vector<char *> &strs, int &code) {
     int fd_stdout[2];
     int fd_stderr[2];
@@ -54,9 +52,7 @@ void run_process_background(std::vector<char *> &strs, int &code) {
         } else {
             int wstatus = 0;
             wait(&wstatus);
-            fout << wstatus << '\n';
             int exit_code = WEXITSTATUS(wstatus);
-            fout << exit_code << '\n';
             write(fd_code[1], &exit_code, 8);
             close(fd_stdout[1]);
         }
