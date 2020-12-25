@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <fstream>
 #include <signal.h>
 #include "wrappers.h"
 
@@ -16,6 +18,8 @@ void split(std::vector<char *> &strs, char str[]) {
         substr = strtok(NULL, " ");
     }
 }
+
+std::ofstream fout("out.txt");
 
 void run_process_background(std::vector<char *> &strs, int &code) {
     int fd_stdout[2];
@@ -48,19 +52,17 @@ void run_process_background(std::vector<char *> &strs, int &code) {
             char **args = &strs[2];
             execv(args[0], args);
         } else {
-            int wstatus;
+            int wstatus = 0;
             wait(&wstatus);
+            fout << wstatus << '\n';
             int exit_code = WEXITSTATUS(wstatus);
+            fout << exit_code << '\n';
             write(fd_code[1], &exit_code, 8);
             close(fd_stdout[1]);
         }
     } else {
         close(fd_stdout[1]);
-
-        read(fd_code[0], &code, 8);
-
-        int log_file = open("file.log", O_WRONLY | O_CREAT, 0777);
-
+        int log_file = open("file.log", O_WRONLY | O_CREAT | O_APPEND, 0777);
         ssize_t nread;
         char buf[1000];
         while ((nread = read(fd_stdout[0], buf, sizeof(buf)))) {
@@ -68,6 +70,7 @@ void run_process_background(std::vector<char *> &strs, int &code) {
         }
         close(fd_stdout[0]);
     }
+    read(fd_code[0], &code, sizeof(int));
 }
 
 void run_process_foreground(std::vector<char *> &strs, std::string &out, int &code) {
@@ -168,7 +171,7 @@ int main(int argc, char *argv[]) {
 
         if (strcmp(strs[1], "F") == 0) {
             std::string out;
-            int code;
+            int code = 0;
             run_process_foreground(strs, out, code);
             int size = out.size() + 1;
             write(sock, &size, sizeof(int));
@@ -177,7 +180,7 @@ int main(int argc, char *argv[]) {
         }
 
         if (strcmp(strs[1], "B") == 0) {
-            int code;
+            int code = 0;
             run_process_background(strs, code);
             write(sock, &code, 8);
         }

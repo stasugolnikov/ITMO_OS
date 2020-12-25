@@ -8,6 +8,13 @@
 #include <signal.h>
 #include "wrappers.h"
 
+int check_mode(char *buf) {
+    for (int i = 0; i < strlen(buf); i++) {
+        if (buf[i] == 'F') return 1;
+    }
+    return 0;
+}
+
 int main(int argc, char *argv[]) {
     int sock = Socket(AF_INET, SOCK_STREAM, 0);
 
@@ -44,10 +51,17 @@ int main(int argc, char *argv[]) {
         int code;
         int size;
 
-        read(sock, &size, sizeof(int));
-        read(sock, out, size * sizeof(char));
-        read(sock, &code, sizeof(int));
-        printf("%s\n", out);
-        printf("Process finished with exit code %d\n", code);
+        int mode = check_mode(buf);
+        if (mode == 1) {
+            read(sock, &size, sizeof(int));
+            read(sock, out, size * sizeof(char));
+            read(sock, &code, sizeof(int));
+            printf("%s\n", out);
+            printf("Process finished with exit code %d\n", code);
+        } else {
+            read(sock, &code, sizeof(int));
+            printf("Process finished with exit code %d\n", code);
+        }
+
     }
 }
