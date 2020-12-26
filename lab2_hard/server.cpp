@@ -10,6 +10,7 @@
 #include <fstream>
 #include <signal.h>
 #include "wrappers.h"
+#include <sys/mman.h>
 
 void split(std::vector<char *> &strs, char str[]) {
     char *substr = strtok(str, " ");
@@ -133,6 +134,9 @@ void handler(int) {
     exit(0);
 }
 
+
+
+
 int main(int argc, char *argv[]) {
     background();
     server = Socket(AF_INET, SOCK_STREAM, 0);
@@ -149,11 +153,23 @@ int main(int argc, char *argv[]) {
     sock = Accept(server, (struct sockaddr *) &adr, &adrlen);
 
     struct sigaction sa;
-    sa.sa_handler = &handler;
     sigaction(SIGUSR1, &sa, NULL);
 
     pid_t pid = getpid();
     write(sock, &pid, sizeof(pid));
+
+
+
+    int shm_fd;
+
+    void* ptr;
+
+    shm_fd = shm_open("jopa", O_RDONLY, 0666);
+
+    ptr = mmap(0, 4096, PROT_READ, MAP_SHARED, shm_fd, 0);
+
+
+
 
     while (true) {
         char buf[256];
