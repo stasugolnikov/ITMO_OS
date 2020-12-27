@@ -1,5 +1,9 @@
 #pragma once
 
+#define	SHT_SYMTAB		2
+#define	SHT_DYNSYM		11
+#define	SHT_REL			9
+
 typedef unsigned long long	Elf64_Addr;
 typedef unsigned short		Elf64_Half;
 typedef unsigned long long	Elf64_Off;
