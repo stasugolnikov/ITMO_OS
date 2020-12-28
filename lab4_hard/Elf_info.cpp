@@ -24,6 +24,7 @@ Elf_info::Elf_info(const char* file_path) {
               (char *) &shtable[0]);
 
     /// copy symbol table
+    shtable.reserve(elf64_Ehdr.e_shnum * elf64_Ehdr.e_shentsize);
     for (auto &sh : shtable) {
         if (sh.sh_type == SHT_DYNSYM || sh.sh_type == SHT_SYMTAB) {
             std::copy(data.begin() + sh.sh_offset, data.begin() + sh.sh_offset + sh.sh_entsize,
@@ -32,6 +33,7 @@ Elf_info::Elf_info(const char* file_path) {
     }
 
     /// copy relocation table
+    shtable.reserve(elf64_Ehdr.e_shnum * elf64_Ehdr.e_shentsize);
     for (auto &sh : shtable) {
         if (sh.sh_type == SHT_REL) {
             std::copy(data.begin() + sh.sh_offset, data.begin() + sh.sh_offset + sh.sh_entsize,
