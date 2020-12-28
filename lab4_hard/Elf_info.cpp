@@ -2,12 +2,15 @@
 #include <iostream>
 #include "Elf_info.h"
 
-Elf_info::Elf_info(const char* file_path) {
+Elf_info::Elf_info(const char *file_path) {
     ifs.open(file_path, std::ios::binary);
+    ifs.seekg(0, std::ios::end);
+    int fileSize = ifs.tellg();
+    ifs.seekg(0, std::ios::beg);
 
     /// file to sequence of bytes
-     data.reserve(INT32_MAX);
-     data.insert(data.begin(), std::istream_iterator<char>(ifs), std::istream_iterator<char>());
+    data.reserve(fileSize);
+    data.insert(data.begin(), std::istream_iterator<char>(ifs), std::istream_iterator<char>());
     /// copy header
     copy(data.begin(), data.begin() + sizeof(elf64_Ehdr), (char *) &elf64_Ehdr);
 
