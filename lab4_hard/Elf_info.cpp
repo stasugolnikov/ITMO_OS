@@ -14,7 +14,7 @@ Elf_info::Elf_info(const char *file_path) {
     /// copy header
     copy(data.begin(), data.begin() + sizeof(elf64_Ehdr), (char *) &elf64_Ehdr);
 
-    /// copy process header table
+    /// copy program header table
     phtable.resize(elf64_Ehdr.e_phnum);
     std::copy(data.begin() + elf64_Ehdr.e_phoff,
               data.begin() + elf64_Ehdr.e_phoff + elf64_Ehdr.e_phentsize * elf64_Ehdr.e_phnum,
@@ -46,27 +46,38 @@ Elf_info::Elf_info(const char *file_path) {
 }
 
 void Elf_info::write_info(int descriptor) {
-    write(descriptor, &elf64_Ehdr, sizeof(elf64_Ehdr));
+    //write(descriptor, &elf64_Ehdr, sizeof(elf64_Ehdr));
+    std::cout << "File type: " << elf64_Ehdr.e_type << std::endl;
+    std::cout << "Target machine: " << elf64_Ehdr.e_machine << std::endl;
+    std::cout << "File version: " << elf64_Ehdr.e_version << std::endl;
+
     printf("\nElf header written\n");
 
     for (auto &ph : phtable) {
-        write(descriptor, &ph, sizeof(ph));
+       //write(descriptor, &ph, sizeof(ph));
+        std::cout << "Type: " << ph.p_type << " ";
+
+        std::cout << "MemSize: " << ph.p_memsz << std::endl;
     }
     printf("\nphtable written\n");
 
-
     for (auto &sh : shtable) {
-        write(descriptor, &sh, sizeof(sh));
+        //write(descriptor, &sh, sizeof(sh));
+        std::cout << "Section name: " << sh.sh_name << " ";
+        std::cout << "Section size: " <<sh.sh_entsize << std::endl;
     }
     printf("\nshtable written\n");
 
     for (auto &sym : symtable) {
-        write(descriptor, &sym, sizeof(sym));
+        //write(descriptor, &sym, sizeof(sym));
+        std::cout << "Sym Value: " << sym.st_value << " ";
+        std::cout << "Symbol info: " << sym.st_info << std::endl;
     }
     printf("\nsymtable written\n");
 
     for (auto &rel : reltable) {
-        write(descriptor, &rel, sizeof(rel));
+        //write(descriptor, &rel, sizeof(rel));
+        std::cout << "RelInfo: " << rel.r_info << std::endl;
     }
     printf("\nreltable written\n");
 
