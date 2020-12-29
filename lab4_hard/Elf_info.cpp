@@ -154,7 +154,7 @@ void Elf_info::write_info(int descriptor) {
 
     std::cout << "\t\tSection table:\n";
     for (auto &sh : shtable) {
-        std::cout << "Section name" << names + sh.sh_name << "  ";
+        std::cout << "Section name: " << names + sh.sh_name << "  ";
         std::cout << "   Section type: ";
         switch (sh.sh_type) {
             case SHT_NULL:
@@ -246,7 +246,7 @@ void Elf_info::write_info(int descriptor) {
 
     std::cout << "\t\tSymbol table:\n";
     for (auto &sym : symtable) {
-        std::cout << "Sym Name: " << &names[sym.st_name] << "    ";
+        std::cout << "Sym Name: " << names[sym.st_name] << "    ";
         std::cout << "  Sym Value: " << sym.st_value << " ";
         std::cout << "   Symbol info: ";
         switch (ELF64_ST_TYPE(sym.st_info)) {
