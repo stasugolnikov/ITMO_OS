@@ -58,7 +58,7 @@ Elf_info::Elf_info(const char *file_path) {
         if (sh.sh_type == SHT_DYNSYM || sh.sh_type == SHT_SYMTAB) {
             std::copy(data.begin() + sh.sh_offset, data.begin() + sh.sh_offset + sizeof(Elf64_Sym),
                       (char *) &symtable[symtable.size() - 1]);
-           // kostil[i] = {};
+            // kostil[i] = {};
         }
         i++;
     }
@@ -248,52 +248,54 @@ void Elf_info::write_info(int descriptor) {
     }
 
     std::cout << "\t\tSymbol table:\n";
-    for (int i = 0; i < shtable.size(); i++) {
-        char *symbol_string_table = &data[shtable[i+1].sh_offset];
-        std::cout << "Sym Name: " << &symbol_string_table[symtable[i].st_name] << "    ";
-        std::cout << "  Sym Value: " << symtable[i].st_value << " ";
-        std::cout << "   Symbol info: ";
-        switch (ELF64_ST_TYPE(symtable[i].st_info)) {
-            case STT_NOTYPE:
-                std::cout << "NOTYPE  ";
-                break;
-            case STT_OBJECT:
-                std::cout << "OBJECT  ";
-                break;
-            case STT_FUNC:
-                std::cout << "FUNC  ";
-                break;
-            case STT_SECTION:
-                std::cout << "SECTION  ";
-                break;
-            case STT_FILE:
-                std::cout << "FILE  ";
-                break;
-            case STT_COMMON:
-                std::cout << "COMMON  ";
-                break;
-            case STT_TLS:
-                std::cout << "TLS  ";
-                break;
-            default:
-                std::cout << "Unknown  ";
-                break;
+    for (int i = 0; i < shtable.size() - 1; i++) {
+        if (shtable[i].sh_type == SHT_DYNSYM || shtable[i].sh_type == SHT_SYMTAB) {
+            char *symbol_string_table = &data[shtable[i + 1].sh_offset];
+            std::cout << "Sym Name: " << &symbol_string_table[symtable[i].st_name] << "    ";
+            std::cout << "  Sym Value: " << symtable[i].st_value << " ";
+            std::cout << "   Symbol info: ";
+            switch (ELF64_ST_TYPE(symtable[i].st_info)) {
+                case STT_NOTYPE:
+                    std::cout << "NOTYPE  ";
+                    break;
+                case STT_OBJECT:
+                    std::cout << "OBJECT  ";
+                    break;
+                case STT_FUNC:
+                    std::cout << "FUNC  ";
+                    break;
+                case STT_SECTION:
+                    std::cout << "SECTION  ";
+                    break;
+                case STT_FILE:
+                    std::cout << "FILE  ";
+                    break;
+                case STT_COMMON:
+                    std::cout << "COMMON  ";
+                    break;
+                case STT_TLS:
+                    std::cout << "TLS  ";
+                    break;
+                default:
+                    std::cout << "Unknown  ";
+                    break;
+            }
+            switch (ELF64_ST_BIND(symtable[i].st_info)) {
+                case STB_LOCAL:
+                    std::cout << "LOCAL  ";
+                    break;
+                case STB_GLOBAL:
+                    std::cout << "GLOBAL  ";
+                    break;
+                case STB_WEAK:
+                    std::cout << "WEAK  ";
+                    break;
+                default:
+                    std::cout << "Unknown  ";
+            }
+            std::cout << std::endl;
+            i++;
         }
-        switch (ELF64_ST_BIND(symtable[i].st_info)) {
-            case STB_LOCAL:
-                std::cout << "LOCAL  ";
-                break;
-            case STB_GLOBAL:
-                std::cout << "GLOBAL  ";
-                break;
-            case STB_WEAK:
-                std::cout << "WEAK  ";
-                break;
-            default:
-                std::cout << "Unknown  ";
-        }
-        std::cout << std::endl;
-        i++;
     }
 
     std::cout << "\t\tRelocation table:\n";
