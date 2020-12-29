@@ -42,8 +42,10 @@ Elf_info::Elf_info(const char *file_path) {
               (char *) &shtable[0]);
 
     names = &data[shtable[elf64_Ehdr.e_shstrndx].sh_offset];
-    int index = initial.sh_link;
-    names = &data[shtable[index].sh_offset];
+    if (elf64_Ehdr.e_shstrndx == SHN_XINDEX) {
+        int index = initial.sh_link;
+        names = &data[shtable[index].sh_offset];
+    }
 
     /// copy symbol table
     ssize_t size = 0;
