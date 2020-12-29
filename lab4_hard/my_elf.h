@@ -1,39 +1,49 @@
 #pragma once
 
-#define	SHT_SYMTAB	2
-#define	SHT_DYNSYM	11
-#define	SHT_REL		9
-#define	SHT_NULL		0
-#define	SHT_PROGBITS		1
-#define	SHT_SYMTAB		2
-#define	SHT_STRTAB		3
-#define	SHT_RELA		4
-#define	SHT_HASH		5
-#define	SHT_DYNAMIC		6
-#define	SHT_NOTE		7
-#define	SHT_NOBITS		8
-#define	SHT_REL			9
-#define	SHT_SHLIB		10
-#define	SHT_DYNSYM		11
-#define	SHT_INIT_ARRAY		14
-#define	SHT_FINI_ARRAY		15
+#define	PT_NULL		0
+#define	PT_LOAD		1
+#define	PT_DYNAMIC	2
+#define	PT_INTERP	3
+#define	PT_NOTE		4
+#define	PT_SHLIB	5
+#define	PT_PHDR		6
+#define	PT_TLS		7
+#define	PT_NUM		8
+
+#define	SHT_SYMTAB	        2
+#define	SHT_DYNSYM	        11
+#define	SHT_REL		        9
+#define	SHT_NULL		    0
+#define	SHT_PROGBITS	    1
+#define	SHT_SYMTAB		    2
+#define	SHT_STRTAB		    3
+#define	SHT_RELA		    4
+#define	SHT_HASH		    5
+#define	SHT_DYNAMIC		    6
+#define	SHT_NOTE		    7
+#define	SHT_NOBITS	    	8
+#define	SHT_REL			    9
+#define	SHT_SHLIB		    10
+#define	SHT_DYNSYM		    11
+#define	SHT_INIT_ARRAY	    14
+#define	SHT_FINI_ARRAY	    15
 #define	SHT_PREINIT_ARRAY	16
-#define	SHT_GROUP		17
+#define	SHT_GROUP		    17
 #define	SHT_SYMTAB_SHNDX	18
 
 
-#define SHT_NULL	0
+#define SHT_NULL	    0
 #define SHT_PROGBITS	1
-#define SHT_SYMTAB	2
-#define SHT_STRTAB	3
-#define SHT_RELA	4
-#define SHT_HASH	5
-#define SHT_DYNAMIC	6
-#define SHT_NOTE	7
-#define SHT_NOBITS	8
-#define SHT_REL		9
-#define SHT_SHLIB	10
-#define SHT_DYNSYM	11
+#define SHT_SYMTAB  	2
+#define SHT_STRTAB  	3
+#define SHT_RELA    	4
+#define SHT_HASH	    5
+#define SHT_DYNAMIC	    6
+#define SHT_NOTE	    7
+#define SHT_NOBITS	    8
+#define SHT_REL		    9
+#define SHT_SHLIB	    10
+#define SHT_DYNSYM	    11
 
 
 #define	SHT_GNU_verdef		0x6ffffffd
@@ -41,7 +51,7 @@
 #define	SHT_GNU_versym		0x6fffffff
 
 
-#define	ET_NONE		0		
+#define	ET_NONE		0
 #define	ET_REL		1
 #define	ET_EXEC		2
 #define	ET_DYN		3
@@ -69,6 +79,7 @@
 #define	STT_TLS		6
 
 #define	SHN_XINDEX	0xffff
+
 
 
 typedef unsigned long long	Elf64_Addr;

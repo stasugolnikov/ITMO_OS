@@ -7,7 +7,6 @@
 Elf_info::Elf_info(const char *file_path) {
     ifs.open(file_path, std::ios::binary);
 
-    // Stop eating new lines in binary mode!!!
     ifs.unsetf(std::ios::skipws);
 
     // get its size:
@@ -22,7 +21,6 @@ Elf_info::Elf_info(const char *file_path) {
     data.insert(data.begin(), std::istream_iterator<char>(ifs), std::istream_iterator<char>());
     /// copy header
     copy(data.begin(), data.begin() + sizeof(elf64_Ehdr), (char *) &elf64_Ehdr);
-    //std::cout << elf64_Ehdr.e_phnum << " " << elf64_Ehdr.e_shnum << '\n';
 
     /// copy program header table
     phtable.resize(elf64_Ehdr.e_phnum);
@@ -114,18 +112,50 @@ void Elf_info::write_info(int descriptor) {
             printf("error version\n");
             break;
     }
-
     printf("Elf header written\n\n");
 
     for (auto &ph : phtable) {
-        std::cout << "Type: " << ph.p_type << "  ";
-        std::cout << "MemSize: " << ph.p_memsz << std::endl;
+        std::cout << "Type: ";
+        switch (ph.p_type) {
+            case PT_NULL:
+                std::cout << "NULL  ";
+                break;
+            case PT_LOAD:
+                std::cout << "LOAD  ";
+                break;
+            case PT_DYNAMIC:
+                std::cout << "DYNAMIC  ";
+                break;
+            case PT_INTERP:
+                std::cout << "INTERP  ";
+                break;
+            case PT_NOTE:
+                std::cout << "NOTE  ";
+                break;
+            case PT_SHLIB:
+                std::cout << "SHLIB  ";
+                break;
+            case PT_PHDR:
+                std::cout << "PHDR  ";
+                break;
+            case PT_TLS:
+                std::cout << "TLS  ";
+                break;
+            case PT_NUM:
+                std::cout << "NUM  ";
+                break;
+            default:
+                std::cout << "Unknown  ";
+                break;
+
+        }
+        std::cout << "   MemSize: " << ph.p_memsz << std::endl;
     }
     printf("phtable written\n\n");
 
     for (auto &sh : shtable) {
         std::cout << "Section name" << names + sh.sh_name << "  ";
-        std::cout << "Section type: ";
+        std::cout << "   Section type: ";
         switch (sh.sh_type) {
             case SHT_NULL:
                 std::cout << "NULL  ";
@@ -211,51 +241,51 @@ void Elf_info::write_info(int descriptor) {
                 std::cout << "Unknown  ";
                 break;
         }
-        std::cout << "Section size: " << sh.sh_entsize << std::endl;
+        std::cout << "   Section size: " << sh.sh_entsize << std::endl;
     }
     printf("shtable written\n\n");
 
     for (auto &sym : symtable) {
         std::cout << "Sym Value: " << sym.st_value << " ";
-        std::cout << "Symbol info: ";
+        std::cout << "   Symbol info: ";
         switch (ELF64_ST_TYPE(sym.st_info)) {
             case STT_NOTYPE:
-                printf("NOTYPE  ");
+                std::cout << "NOTYPE  ";
                 break;
             case STT_OBJECT:
-                printf("OBJECT  ");
+                std::cout << "OBJECT  ";
                 break;
             case STT_FUNC:
-                printf("FUNC  ");
+                std::cout << "FUNC  ";
                 break;
             case STT_SECTION:
-                printf("SECTION  ");
+                std::cout << "SECTION  ";
                 break;
             case STT_FILE:
-                printf("FILE  ");
+                std::cout << "FILE  ";
                 break;
             case STT_COMMON:
-                printf("COMMON  ");
+                std::cout << "COMMON  ";
                 break;
             case STT_TLS:
-                printf("TLS  ");
+                std::cout << "TLS  ";
                 break;
             default:
-                printf("Unknown  ");
+                std::cout << "Unknown  ";
                 break;
         }
         switch (ELF64_ST_BIND(sym.st_info)) {
             case STB_LOCAL:
-                printf("LOCAL  ");
+                std::cout << "LOCAL  ";
                 break;
             case STB_GLOBAL:
-                printf("GLOBAL  ");
+                std::cout << "GLOBAL  ";
                 break;
             case STB_WEAK:
-                printf("WEAK  ");
+                std::cout << "WEAK  ";
                 break;
             default:
-                printf("Unknown  ");
+                std::cout << "Unknown  ";
         }
         std::cout << std::endl;
     }
