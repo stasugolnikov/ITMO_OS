@@ -53,7 +53,6 @@ Elf_info::Elf_info(const char *file_path) {
         }
     }
     symtable.resize(size);
-    std::cout << size << std::endl;
     for (auto &sh : shtable) {
         if (sh.sh_type == SHT_DYNSYM || sh.sh_type == SHT_SYMTAB) {
             std::copy(data.begin() + sh.sh_offset, data.begin() + sh.sh_offset + sh.sh_entsize,
@@ -68,7 +67,6 @@ Elf_info::Elf_info(const char *file_path) {
         }
     }
     reltable.resize(size);
-    std::cout << size << std::endl;
     for (auto &sh : shtable) {
         if (sh.sh_type == SHT_REL) {
             std::copy(data.begin() + sh.sh_offset, data.begin() + sh.sh_offset + sh.sh_entsize,
@@ -296,6 +294,5 @@ void Elf_info::write_info(int descriptor) {
     for (auto &rel : reltable) {
         std::cout << "RelInfo: " << rel.r_info << std::endl;
     }
-    printf("reltable written\n\n");
 
 }
