@@ -1,5 +1,7 @@
-#include <zconf.h>
+#include <unistd.h>
 #include <iostream>
+#include <vector>
+#include <iterator>
 #include "Elf_info.h"
 
 Elf_info::Elf_info(const char *file_path) {
