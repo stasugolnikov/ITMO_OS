@@ -246,7 +246,8 @@ void Elf_info::write_info(int descriptor) {
 
     std::cout << "\t\tSymbol table:\n";
     for (auto &sym : symtable) {
-        std::cout << "Sym Value: " << sym.st_value << " ";
+        std::cout << "Sym Name: " << &names[sym.st_name] << "    ";
+        std::cout << "  Sym Value: " << sym.st_value << " ";
         std::cout << "   Symbol info: ";
         switch (ELF64_ST_TYPE(sym.st_info)) {
             case STT_NOTYPE:

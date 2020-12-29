@@ -134,6 +134,7 @@ typedef struct {
 } Elf64_Shdr;
 
 typedef struct {
+    Elf64_Word	st_name;
     unsigned char	st_info;	/* bind, type: ELF_64_ST_... */
     unsigned char	st_other;
     Elf64_Half	    st_shndx;	/* SHN_... */
