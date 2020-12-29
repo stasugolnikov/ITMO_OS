@@ -79,6 +79,8 @@ Elf_info::Elf_info(const char *file_path) {
 
 
 void Elf_info::write_info(int descriptor) {
+
+    std::cout << "\t\tElf header:\n";
     std::cout << "File type: ";
     switch (elf64_Ehdr.e_type) {
         case ET_NONE:
@@ -112,8 +114,8 @@ void Elf_info::write_info(int descriptor) {
             printf("error version\n");
             break;
     }
-    printf("Elf header written\n\n");
 
+    std::cout << "\t\tProgram headers table:\n";
     for (auto &ph : phtable) {
         std::cout << "Type: ";
         switch (ph.p_type) {
@@ -151,8 +153,8 @@ void Elf_info::write_info(int descriptor) {
         }
         std::cout << "   MemSize: " << ph.p_memsz << std::endl;
     }
-    printf("phtable written\n\n");
 
+    std::cout << "\t\tSection table:\n";
     for (auto &sh : shtable) {
         std::cout << "Section name" << names + sh.sh_name << "  ";
         std::cout << "   Section type: ";
@@ -243,8 +245,8 @@ void Elf_info::write_info(int descriptor) {
         }
         std::cout << "   Section size: " << sh.sh_entsize << std::endl;
     }
-    printf("shtable written\n\n");
 
+    std::cout << "\t\tSymbol table:\n";
     for (auto &sym : symtable) {
         std::cout << "Sym Value: " << sym.st_value << " ";
         std::cout << "   Symbol info: ";
@@ -289,8 +291,8 @@ void Elf_info::write_info(int descriptor) {
         }
         std::cout << std::endl;
     }
-    printf("symtable written\n\n");
 
+    std::cout << "\t\tRelocation table:\n";
     for (auto &rel : reltable) {
         std::cout << "RelInfo: " << rel.r_info << std::endl;
     }
