@@ -44,6 +44,7 @@ Elf_info::Elf_info(const char *file_path) {
         }
     }
     symtable.resize(size);
+    std::cout << size << std::endl;
     for (auto &sh : shtable) {
         if (sh.sh_type == SHT_DYNSYM || sh.sh_type == SHT_SYMTAB) {
             std::copy(data.begin() + sh.sh_offset, data.begin() + sh.sh_offset + sh.sh_entsize,
@@ -58,6 +59,7 @@ Elf_info::Elf_info(const char *file_path) {
         }
     }
     reltable.resize(size);
+    std::cout << size << std::endl;
     for (auto &sh : shtable) {
         if (sh.sh_type == SHT_REL) {
             std::copy(data.begin() + sh.sh_offset, data.begin() + sh.sh_offset + sh.sh_entsize,
@@ -67,38 +69,67 @@ Elf_info::Elf_info(const char *file_path) {
 }
 
 void Elf_info::write_info(int descriptor) {
-    //write(descriptor, &elf64_Ehdr, sizeof(elf64_Ehdr));
-    std::cout << "File type: " << elf64_Ehdr.e_type << std::endl;
-    std::cout << "Target machine: " << elf64_Ehdr.e_machine << std::endl;
-    std::cout << "File version: " << elf64_Ehdr.e_version << std::endl;
-    printf("Elf header written\n");
+    std::cout << "File type: ";
+    switch (elf64_Ehdr.e_type) {
+    case ET_NONE:
+	std::cout << "unknonw type\n";
+        break;
+    case ET_REL:
+        std::cout << "relocatable file\n";
+        break;
+    case ET_EXEC:
+        std::cout << "executable file\n";
+        break;
+    case ET_DYN:
+        std::cout << "shared object\n";
+        break;
+    case ET_CORE:
+        std::cout << "core file\n";
+        break;
+    default:
+        printf("error\n");
+        break;
+    }
+    std::cout << "File version: ";
+    switch (elf64_Ehdr.e_ident[EI_VERSION]) {
+    case EV_NONE:
+        printf("invalid version\n");
+        break;
+    case EV_CURRENT:
+        printf("current version\n");
+        break;
+    default:
+        printf("error version\n");
+        break;
+    }
+
+    printf("Elf header written\n\n");
 
     for (auto &ph : phtable) {
        //write(descriptor, &ph, sizeof(ph));
         std::cout << "Type: " << ph.p_type << " ";
-
         std::cout << "MemSize: " << ph.p_memsz << std::endl;
     }
-    printf("phtable written\n");
+    printf("phtable written\n\n");
 
     for (auto &sh : shtable) {
         //write(descriptor, &sh, sizeof(sh));
         std::cout << "Section name: " << sh.sh_name << " ";
         std::cout << "Section size: " <<sh.sh_entsize << std::endl;
     }
-    printf("shtable written\n");
+    printf("shtable written\n\n");
 
     for (auto &sym : symtable) {
         //write(descriptor, &sym, sizeof(sym));
         std::cout << "Sym Value: " << sym.st_value << " ";
         std::cout << "Symbol info: " << sym.st_info << std::endl;
     }
-    printf("\nsymtable written\n");
+    printf("symtable written\n\n");
 
     for (auto &rel : reltable) {
         //write(descriptor, &rel, sizeof(rel));
         std::cout << "RelInfo: " << rel.r_info << std::endl;
     }
-    printf("\nreltable written\n");
+    printf("reltable written\n\n");
 
 }

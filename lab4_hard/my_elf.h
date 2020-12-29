@@ -1,8 +1,32 @@
 #pragma once
 
-#define	SHT_SYMTAB		2
-#define	SHT_DYNSYM		11
-#define	SHT_REL			9
+#define	SHT_SYMTAB	2
+#define	SHT_DYNSYM	11
+#define	SHT_REL		9
+
+#define	ET_NONE		0		
+#define	ET_REL		1
+#define	ET_EXEC		2
+#define	ET_DYN		3
+#define	ET_CORE		4
+#define	ET_NUM		5
+
+
+#define	EI_MAG0		0	
+#define	EI_MAG1		1
+#define	EI_MAG2		2
+#define	EI_MAG3		3
+#define	EI_CLASS	4	
+#define	EI_DATA		5	
+#define	EI_VERSION	6	
+#define	EI_OSABI	7	
+#define	EI_ABIVERSION	8	
+#define	EI_PAD		9
+
+#define EV_NONE		0
+#define EV_CURRENT	1
+#define EV_NUM		2
+
 
 typedef unsigned long long	Elf64_Addr;
 typedef unsigned short		Elf64_Half;
