@@ -12,7 +12,9 @@ class Elf_info {
     std::vector<Elf64_Shdr> shtable;
     std::vector<Elf64_Sym> symtable;
     std::vector<Elf64_Rel> reltable;
+    char* names;
     std::vector<char> data;
+
 
 public:
      explicit Elf_info(const char* file_path);
