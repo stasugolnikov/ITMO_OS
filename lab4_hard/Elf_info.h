@@ -13,6 +13,7 @@ class Elf_info {
     std::vector<Elf64_Sym> symtable;
     std::vector<Elf64_Rel> reltable;
     char* names;
+    std::vector <Elf64_Shdr> kostil;
     std::vector<char> data;
 
 

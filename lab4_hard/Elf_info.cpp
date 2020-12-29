@@ -57,6 +57,7 @@ Elf_info::Elf_info(const char *file_path) {
         if (sh.sh_type == SHT_DYNSYM || sh.sh_type == SHT_SYMTAB) {
             std::copy(data.begin() + sh.sh_offset, data.begin() + sh.sh_offset + sh.sh_entsize,
                       (char *) &symtable[symtable.size() - 1]);
+            kostil.push_back(sh);
         }
     }
     /// copy relocation table
@@ -245,8 +246,9 @@ void Elf_info::write_info(int descriptor) {
     }
 
     std::cout << "\t\tSymbol table:\n";
+    int i = 0;
     for (auto &sym : symtable) {
-        std::cout << "Sym Name: " << names[sym.st_name] << "    ";
+        std::cout << "Sym Name: " << &names[kostil[i].sh_name] << "    ";
         std::cout << "  Sym Value: " << sym.st_value << " ";
         std::cout << "   Symbol info: ";
         switch (ELF64_ST_TYPE(sym.st_info)) {
@@ -289,6 +291,7 @@ void Elf_info::write_info(int descriptor) {
                 std::cout << "Unknown  ";
         }
         std::cout << std::endl;
+        i++;
     }
 
     std::cout << "\t\tRelocation table:\n";
