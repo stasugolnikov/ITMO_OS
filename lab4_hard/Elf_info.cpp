@@ -41,7 +41,6 @@ Elf_info::Elf_info(const char *file_path) {
               data.begin() + elf64_Ehdr.e_shoff + elf64_Ehdr.e_shnum * elf64_Ehdr.e_shentsize,
               (char *) &shtable[0]);
 
-    names = nullptr;
     names = &data[shtable[elf64_Ehdr.e_shstrndx].sh_offset];
     int index = initial.sh_link;
     names = &data[shtable[index].sh_offset];
